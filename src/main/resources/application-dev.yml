@@ -1,6 +1,6 @@
 spring:
   application:
-    name: control-server-remote
+    name: log-analyzer
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://47.93.182.235:3306/log_analyzer?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false
