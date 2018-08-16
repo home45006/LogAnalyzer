@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+    </parent>
+
+    <groupId>com.cn.zktd.saber.log</groupId>
+    <artifactId>LogAnalyzer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>Log Analyzer</name>
+    <packaging>jar</packaging>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>xiaomai Team Repository</name>
+            <url>http://nexus.imxiaomai.com:8081/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <version>1.16.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>log-analyzer</finalName>
+        <plugins>
+            <!-- compiler插件, 设定JDK版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.3.3.RELEASE</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.iot.market.wrapper</groupId>
+                                    <artifactId>market-wrapper</artifactId>
+                                    <classifier>distribution</classifier>
+                                    <version>1.0</version>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>${project.build.directory}/market-wrapper-1.0/wrapper/bin/service.sh</include>
+                        <include>${project.build.directory}/market-wrapper-1.0/wrapper/conf/wrapper.conf</include>
+                        <include>${project.build.directory}/market-wrapper-1.0/wrapper/conf/java.additional.conf</include>
+                    </includes>
+                    <replacements>
+                        <replacement>
+                            <token>%app.name%</token>
+                            <value>logAnalyzer</value>
+                        </replacement>
+                        <replacement>
+                            <token>%app.long.name%</token>
+                            <value>logAnalyzer</value>
+                        </replacement>
+                        <replacement>
+                            <token>%app.description%</token>
+                            <value>logAnalyzer</value>
+                        </replacement>
+                        <replacement>
+                            <token>%YourMainClass%</token>
+                            <value>com.cn.zktd.saber.log.analyzer.LogApplication</value>
+                        </replacement>
+                        <replacement>
+                            <token>%JAVA_OPTS%</token>
+                            <value>-server -Xms1024m -Xmx1024m  -XX:PermSize=64M -XX:MaxNewSize=512m -XX:MaxPermSize=128m -Djava.awt.headless=true -XX:+UseConcMarkSweepGC</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>log-analyzer</finalName>
+                    <descriptors>
+                        <descriptor>target/market-wrapper-1.0/wrapper/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
