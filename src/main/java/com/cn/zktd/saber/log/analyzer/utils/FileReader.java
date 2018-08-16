@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -21,9 +22,12 @@ public class FileReader {
 //            String fileName = "F:\\tmp\\log.txt";
             String fileName = "F:\\tmp\\test.log";
 
+            Pattern p= Pattern.compile("([a-z]+)(\\d+)");
+
             List<String> lineLists = Files
                     .lines(Paths.get(fileName), Charset.defaultCharset())
                     .flatMap(line -> Arrays.stream(line.split("\n")))
+                    .anyMatch(line -> p.matcher(line).find())
                     .collect(Collectors.toList());
 
             //输出文件函数
