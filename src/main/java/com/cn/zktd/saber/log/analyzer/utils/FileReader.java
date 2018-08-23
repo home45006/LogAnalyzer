@@ -1,5 +1,8 @@
 package com.cn.zktd.saber.log.analyzer.utils;
 
+import com.cn.zktd.saber.log.analyzer.entity.TblB2CollectLog;
+import com.cn.zktd.saber.log.analyzer.service.B2LogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,6 +20,9 @@ import java.util.stream.Collectors;
  */
 @Component
 public class FileReader {
+
+    @Autowired
+    private B2LogService b2LogService;
 
     public void readFile() {
         try {
@@ -41,6 +47,18 @@ public class FileReader {
                     }
                 }
             });
+
+            TblB2CollectLog logEntity = new TblB2CollectLog();
+            logEntity.setRoomId("ROM1708310008953");
+            logEntity.setKnxAddr("0/0/3");
+            logEntity.setRunTime("2018-07-30 07:00:36.972");
+            logEntity.setProtocol("B2");
+            logEntity.setValue("off");
+            logEntity.setSendReceive("receive");
+            logEntity.setSeq("99893");
+            logEntity.setUserName("ROM1708310008953");
+            logEntity.setSessionId("64c1ae60c55544a7a625b8c1ec3fc0a");
+            b2LogService.save(logEntity);
         } catch (IOException e) {
             e.printStackTrace();
         }
